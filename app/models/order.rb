@@ -1,11 +1,21 @@
 class Order < ApplicationRecord
   before_create :set_defaults
 
+  validates :first_name, :country, :postal_code, :email_address, presence: true
+  # this validator uses a loose regex to validate something like: '\w+@\w+'
+  validates :email_address, email: true
+
   UNIT_PRICE_CENTS = 299
   CURRENCY = 'USD'.freeze
 
   def price
     Money.new(UNIT_PRICE_CENTS, CURRENCY)
+  end
+
+  # trim email spaces
+  def email_address=(email)
+    email = email.strip if email
+    super
   end
 
   private
