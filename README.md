@@ -28,7 +28,19 @@ Install the dependencies
 bundle install
 ```
 
+Create '.env' file to hold the ENV variables, copy the sample file to get started with the required ENV variables:
+```
+cp .env.sample .env
+```
+
+Run tests, to make sure everything runs smoothly
+```
+rails test
+rails test:system
+```
+
 Start the puma server with
 ```
 rails s
 ```
+
