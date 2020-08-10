@@ -17,7 +17,9 @@ class OrdersController < ApplicationController
 
   # GET /orders/new
   def new
-    @order = Order.new
+    result = InitOrderService.new.call
+    @external_payment_secret = result.external_payment_secret
+    @order = result.order
   end
 
   # GET /orders/1/edit
@@ -27,10 +29,10 @@ class OrdersController < ApplicationController
   # POST /orders
   # POST /orders.json
   def create
-    @order = Order.new(order_params)
+    @order = CreateOrderService.new(order_params).call
 
     respond_to do |format|
-      if @order.save
+      if @order.persisted?
         format.html { redirect_to order_permalink_url(@order.permalink), notice: 'Order was successfully created.' }
         format.json { render :show, status: :created, location: @order }
       else
@@ -76,6 +78,6 @@ class OrdersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def order_params
-      params.require(:order).permit(:amount_cents, :first_name, :last_name, :street_line_1, :street_line_2, :postal_code, :city, :region, :country, :email_address, :number, :permalink)
+      params.require(:order).permit(:amount_cents, :first_name, :last_name, :street_line_1, :street_line_2, :postal_code, :city, :region, :country, :email_address, :external_payment_id)
     end
 end

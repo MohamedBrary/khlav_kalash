@@ -33,7 +33,7 @@ class OrdersTest < ApplicationSystemTestCase
     fill_in 'First name', with: @order.first_name
     fill_in 'Last name', with: @order.last_name
     fill_in 'Postal code', with: @order.postal_code
-    click_on "Pay #{@order.price.format}"
+    click_on 'Update Order Details'
 
     assert_text 'Order was successfully updated'
     click_on 'Back'

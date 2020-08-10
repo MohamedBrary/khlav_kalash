@@ -78,3 +78,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Adds email validator
 gem 'email_validator'
+
+# Adding Stripe to handle payment
+gem 'stripe'

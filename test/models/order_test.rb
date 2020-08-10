@@ -13,14 +13,14 @@ class OrderTest < ActiveSupport::TestCase
 
   test 'email validation' do
     order = Order.new
-    invalid_email_values = [nil, '', '@', 'first@', '@last']
+    invalid_email_values = [nil, '', ' ', '@', 'first@', '@last']
     invalid_email_values.each do |invalid_email|
       order.email_address = invalid_email
       order.validate
 
       assert has_validation_error?(order, :email_address, :invalid), "test email validation with value #{invalid_email} failed"
     end
-    order.email_address = 'valid@email.com'
+    order.email_address = ' valid@email.com '
     order.validate
 
     refute has_validation_error?(order, :email_address, :invalid)

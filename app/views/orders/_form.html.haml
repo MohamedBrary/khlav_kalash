@@ -1,12 +1,15 @@
-= form_with(model: order, local: true) do |form|
+/ source: https://stripe.com/docs/payments/accept-a-payment
+= form_with(model: order, local: true, id: 'payment-form', data: { secret: @external_payment_secret }) do |form|
   - if order.errors.any?
     #error_explanation
       %h2
-        = pluralize(order.errors.count, "error")
+        = pluralize(order.errors.count, 'error')
         prohibited this order from being saved:
       %ul
         - order.errors.full_messages.each do |message|
           %li= message
+
+  = form.hidden_field :external_payment_id
 
   .field
     = form.label :first_name
@@ -14,6 +17,9 @@
   .field
     = form.label :last_name
     = form.text_field :last_name
+  .field
+    = form.label :email_address
+    = form.text_field :email_address
   .field
     = form.label :street_line_1
     = form.text_field :street_line_1
@@ -32,9 +38,24 @@
   .field
     = form.label :country
     = form.country_select :country
-  .field
-    = form.label :email_address
-    = form.text_field :email_address
 
-  .actions
-    = form.submit "Pay #{@order.price.format}"
+  / TODO persist ExternalPayment, and check on its status from Stripe
+  - if !@order.persisted?
+    - if @external_payment_secret
+      .field
+        .form-row
+          %label{for: 'card-element'}
+            Credit or debit card
+          #card-element
+            / A Stripe Element will be inserted here.
+          / Used to display form errors.
+          #card-errors{role: 'alert'}
+      .actions
+        = form.submit "Pay #{@order.price.format}"
+    - else
+      %p Pyament was already successful!
+      .actions
+        = form.submit 'Save Order Details'
+  - else
+    .actions
+      = form.submit 'Update Order Details'
